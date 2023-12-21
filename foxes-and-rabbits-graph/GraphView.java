@@ -133,7 +133,7 @@ public class GraphView implements SimulatorView
         // An internal image buffer that is used for painting. For
         // actual display, this image buffer is then copied to screen.
         private BufferedImage graphImage;
-        private int lastVal1, lastVal2;
+        private int lastVal1, lastVal2, lastVal3;
         private int yMax;
 
         /**
@@ -145,6 +145,7 @@ public class GraphView implements SimulatorView
             clearImage();
             lastVal1 = height;
             lastVal2 = height;
+            lastVal3 = height;
             yMax = startMax;
         }
 
@@ -161,8 +162,10 @@ public class GraphView implements SimulatorView
             g.setColor(Color.BLACK);
             g.drawLine(width-4, 0, width-4, height);
             g.drawLine(width-2, 0, width-2, height);
+            
             lastVal1 = height;
             lastVal2 = height;
+            lastVal3 = height;
             repaint();
         }
 
@@ -175,10 +178,12 @@ public class GraphView implements SimulatorView
                 Iterator<Class<?>> it = classes.iterator();
                 Class<?> class1 = it.next();
                 Class<?> class2 = it.next();
+                Class<?> class3 = it.next();
 
                 stats.reset();
                 int count1 = stats.getPopulationCount(field, class1);
                 int count2 = stats.getPopulationCount(field, class2);
+                int count3 = stats.getPopulationCount(field, class3);
 
                 Graphics g = graphImage.getGraphics();
 
@@ -210,6 +215,17 @@ public class GraphView implements SimulatorView
                 g.setColor(colors.get(class2));
                 g.drawLine(width-3, lastVal2, width-2, y);
                 lastVal2 = y;
+                y = height - ((height * count3) / yMax) - 1;
+                while (y<0) {
+                    scaleDown();
+                    y = height - ((height * count3) / yMax) - 1;
+                }
+                g.setColor(LIGHT_GRAY);
+                g.drawLine(width-2, y, width-2, height);
+                g.setColor(colors.get(class3));
+                g.drawLine(width-4, lastVal3, width-2, y);
+                lastVal3 = y;
+                
 
                 repaint();
 
@@ -243,6 +259,7 @@ public class GraphView implements SimulatorView
             yMax = (int) (yMax / SCALE_FACTOR);
             lastVal1 = oldTop + (int) (lastVal1 * SCALE_FACTOR);
             lastVal2 = oldTop + (int) (lastVal2 * SCALE_FACTOR);
+            lastVal3 = oldTop + (int) (lastVal3 * SCALE_FACTOR);
 
             repaint();
         }

@@ -19,6 +19,8 @@ public class Simulator
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
     // The probability that a fox will be created in any given grid position.
+    private static final double WOLF_CREATION_PROBABILITY = 0.01;
+    // The probability that a fox will be created in any given grid position.
     private static final double FOX_CREATION_PROBABILITY = 0.02;
     // The probability that a rabbit will be created in any given grid position.
     private static final double RABBIT_CREATION_PROBABILITY = 0.08;    
@@ -62,11 +64,14 @@ public class Simulator
         SimulatorView view = new GridView(depth, width);
         view.setColor(Rabbit.class, Color.ORANGE);
         view.setColor(Fox.class, Color.BLUE);
+        view.setColor(Wolf.class, Color.RED);
         views.add(view);
         
         view = new GraphView(500, 150, 500);
-        view.setColor(Rabbit.class, Color.BLACK);
         view.setColor(Fox.class, Color.RED);
+        view.setColor(Rabbit.class, Color.BLACK);
+        view.setColor(Wolf.class, Color.YELLOW);
+    
         views.add(view);
 
         // Setup a valid starting point.
@@ -155,7 +160,12 @@ public class Simulator
         field.clear();
         for(int row = 0; row < field.getDepth(); row++) {
             for(int col = 0; col < field.getWidth(); col++) {
-                if(rand.nextDouble() <= FOX_CREATION_PROBABILITY) {
+                if(rand.nextDouble() <= WOLF_CREATION_PROBABILITY) {
+                    Location location = new Location(row, col);
+                    Wolf wolf = new Wolf(true, field, location);
+                    animals.add(wolf);
+                }
+                else if(rand.nextDouble() <= FOX_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     Fox fox = new Fox(true, field, location);
                     animals.add(fox);
